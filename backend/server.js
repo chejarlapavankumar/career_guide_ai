@@ -9,14 +9,29 @@ app.use(cors());
 app.use(express.json());
 
 // connect to SQLite
-const db = new sqlite3.Database('./careerguide.db');
+const db = new sqlite3.Database('./careerguide.db', (err) => {
+  if(err) {
+    console.error("Error connecting to the database:",err.message);
+  }else{
+    console.log("Successfully connected to the SQLite database.");
+  }
+});
 
 // API: get all professions
 app.get('/api/professions', (req, res) => {
-  db.all("SELECT id, name FROM professions", [], (err, rows) => {
+  db.all("SELECT id, name FROM professions WHERE parent_id IS NULL", [], (err, rows) => {
     if (err) {
-      res.status(500).json({ error: err.message });
-      return;
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(rows);
+  });
+});
+
+app.get('/api/professions/parent/:id', (req, res)=>{
+  const {id} = req.params;
+  db.all("SELECT id, name FROM professions WHERE parent_id= ?",[id],(err,rows)=>{
+    if(err){
+      return res.status(500).json({"error": err.message});
     }
     res.json(rows);
   });
