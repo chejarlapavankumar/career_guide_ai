@@ -99,7 +99,11 @@ async function main() {
       const extractor=await pipeline('feature-extraction','Xenova/all-MiniLM-L6-v2');
       
       const professions=await new Promise((resolve,reject) => {
-        const sql=`SELECT p.id, p.name, GROUP_CONCAT(r.responsibility_text, '. ') AS description FROM professions p JOIN responsibilities r ON p.id = r.profession_id LEFT JOIN professions p2 ON p.id = p2.parent_id  WHERE p2.id IS NULL GROUP BY p.id, p.name;`;
+        const sql=`SELECT p.id, p.name, GROUP_CONCAT(r.responsibility_text, '. ') 
+        AS description FROM professions p 
+        JOIN responsibilities r ON p.id = r.profession_id 
+        LEFT JOIN professions p2 ON p.id = p2.parent_id  
+        WHERE p2.id IS NULL GROUP BY p.id, p.name;`;
 
         db.all(sql,[],(err,rows)=> err? reject(err):resolve(rows));
       });
@@ -115,8 +119,11 @@ async function main() {
         score: cosineSimilarity(queryEmbedding, professionEmbedding[i].data)
       }));
       
-      results.sort((a,b) => b.score-a.score);
-      res.json(results.slice(0,8));
+      const threshold=0.4;
+      const filteredResults=results.filter(r => r.score>threshold);
+
+      filteredResults.sort((a,b) => b.score-a.score);
+      res.json(filteredResults.slice(0,8));
     }
     catch(error){
       console.error("Search error:",error);
