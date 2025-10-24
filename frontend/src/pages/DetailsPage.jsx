@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import skeletonLoader from "../components/SkeletonLoader";
 import SkeletonLoader from "../components/SkeletonLoader";
 
 
@@ -11,7 +10,7 @@ function DetailsPage(){
 
     useEffect(() => {
       setIsLoading(true);
-        fetch(`http://localhost:5000/api/professions/${professionId}`)
+        fetch(`${import.meta.env.VITE_API_URL}/api/professions/${professionId}`)
         .then(res=>res.json())
         .then(data=> {
           setDetails(data)

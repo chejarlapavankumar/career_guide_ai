@@ -6,7 +6,7 @@ function SubProfessionsPage(){
     const [subProfessions,setSubProfessions]=useState([]);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/professions/parent/${domainId}`)
+        fetch(`${import.meta.env.VITE_API_URL}/api/professions/parent/${domainId}`)
         .then(res=> res.json())
         .then(data=> setSubProfessions(data));
     }, [domainId]);

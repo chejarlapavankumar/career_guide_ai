@@ -1,10 +1,11 @@
 import express from 'express';
 import sqlite3 from 'sqlite3';
 import cors from 'cors';
-import {pipeline} from '@xenova/transformers';
+import { pipeline } from '@xenova/transformers';
 
 async function main() {
-  
+  const extractor=await pipeline('feature-extraction','Xenova/all-MiniLM-L6-v2');
+
   const app = express();
   const PORT = 5000;
 
@@ -19,6 +20,7 @@ async function main() {
       console.log("Successfully connected to the SQLite database.");
     }
   });
+
 
   // API: get all professions
   app.get('/api/professions', (req, res) => {
@@ -96,34 +98,30 @@ async function main() {
       if(!query){
         return res.status(400).json({error: "Query is required"});
       }
-      const extractor=await pipeline('feature-extraction','Xenova/all-MiniLM-L6-v2');
       
-      const professions=await new Promise((resolve,reject) => {
-        const sql=`SELECT p.id, p.name, GROUP_CONCAT(r.responsibility_text, '. ') 
-        AS description FROM professions p 
-        JOIN responsibilities r ON p.id = r.profession_id 
-        LEFT JOIN professions p2 ON p.id = p2.parent_id  
-        WHERE p2.id IS NULL GROUP BY p.id, p.name;`;
+      
+      const queryEmb= (await extractor(query, {pooling:'mean', normalize:true})).data;
 
-        db.all(sql,[],(err,rows)=> err? reject(err):resolve(rows));
-      });
-
-      const queryEmbedding=(await extractor(query,{pooling:'mean',normalize:true})).data;
-      const professionEmbedding=await Promise.all(
-        professions.map(p => extractor(p.description || p.name, {pooling :'mean',normalize:true}))
+      const professions = await new Promise((resolve, reject) =>
+        db.all("SELECT id, name, embedding FROM professions", [], (err, rows) =>
+          err ? reject(err) : resolve(rows)
+        )
       );
 
-      const results=professions.map((profession,i) => ({
-        id: profession.id,
-        name:profession.name,
-        score: cosineSimilarity(queryEmbedding, professionEmbedding[i].data)
-      }));
       
-      const threshold=0.4;
-      const filteredResults=results.filter(r => r.score>threshold);
 
-      filteredResults.sort((a,b) => b.score-a.score);
-      res.json(filteredResults.slice(0,8));
+      const results = professions.map(p => {
+        const emb = p.embedding ? JSON.parse(p.embedding) : null;
+        if (!emb) return { id: p.id, name: p.name, score: -1 };
+        return {
+          id: p.id,
+          name: p.name,
+          score: cosineSimilarity(queryEmb, emb),
+        };
+      });
+
+      results.sort((a, b) => b.score - a.score);
+      res.json(results.slice(0, 4));
     }
     catch(error){
       console.error("Search error:",error);

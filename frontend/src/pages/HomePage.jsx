@@ -7,7 +7,7 @@ function HomePage(){
     const [query,setQuery]=useState("");
 
     useEffect(() =>{
-        fetch("http://localhost:5000/api/professions")
+        fetch(`${import.meta.env.VITE_API_URL}/api/professions`)
         .then(res=>res.json())
         .then(data=>setDomains(data));
     }, []);
@@ -19,7 +19,7 @@ function HomePage(){
             return;
         }
 
-        fetch("http://localhost:5000/api/search",{
+        fetch(`${import.meta.env.VITE_API_URL}/api/search`,{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({query:query})
