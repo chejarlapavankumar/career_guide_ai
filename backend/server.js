@@ -3,6 +3,14 @@ import sqlite3 from 'sqlite3';
 import cors from 'cors';
 import { pipeline } from '@xenova/transformers';
 
+import {GoogleGenerativeAI} from '@google/generative-ai';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const genAI=new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
+const model=genAI.getGenerativeModel({model: "models/gemini-2.5-flash"});
+
 async function main() {
   const extractor=await pipeline('feature-extraction','Xenova/all-MiniLM-L6-v2');
 
@@ -128,6 +136,76 @@ async function main() {
       res.status(500).json({error: "Failed to perform AI search"});
     }
   });
+
+app.post('/api/generate-learning-path',async(req,res) => {
+  try{
+    const {professionName} = req.body;
+    if(!professionName){
+      return res.status(400).json({error: "Profession name is required"});
+    }
+
+    const prompt = `
+      Act as an expert career coach and senior ${professionName}.
+      Generate a detailed, step-by-step learning path for someone wanting to become a "${professionName}".
+      Use clear markdown formatting **strictly** as follows:
+      - Use H2 headings (##) for main sections (e.g., ## Month 1: The Foundations).
+      - Use H3 headings (###) for subsections (e.g., ### Key Topics).
+      - Use bullet points (*) for lists.
+      - Use bold text (**) for emphasis on key terms or technologies.
+      - Ensure proper line breaks between paragraphs and list items.
+      
+      Include **exactly** these sections:
+
+      ## Month 1: The Foundations
+      ### Key Topics:
+      * [List key foundational concepts]
+      ### Goals:
+      * [List specific, achievable goals for the first month]
+
+      ## Months 2-3: Core Skills
+      ### Key Tools & Technologies:
+      * [List essential tools/languages/frameworks]
+      ### Practice:
+      * [Suggest ways to practice these skills]
+
+      ## Months 4-6: Building & Specializing
+      ### Advanced Topics:
+      * [List more advanced concepts or specializations]
+      ### Project Ideas:
+      * [Suggest 1-2 slightly more complex project ideas]
+
+      ## Your First Project
+      ### Idea:
+      * [Describe a simple, specific beginner project]
+      ### Key Steps:
+      * [List the main steps to build it]
+
+      ## Key Learning Resources
+      ### Online Courses:
+      * [List 1-2 specific course names and platforms, e.g., "**Complete Web Development Bootcamp** on Udemy"]
+      ### YouTube Channels:
+      * [List 1-2 relevant channel names]
+      ### Books:
+      * [List 1-2 relevant book titles, if applicable]
+      ### Documentation/Websites:
+      * [List 1-2 essential websites, e.g., official documentation]
+
+      Maintain an encouraging and practical tone throughout.
+    `;
+      
+    console.log(`Generating learning path for ${professionName}`);
+
+    const result=await model.generateContent(prompt);
+    const response = await result.response;
+    const text=response.text();
+    res.json({learningPath: text})
+  }
+  catch(error){
+    console.error("LLM Error:",error);
+    res.status(500).json({error: "Failed to generate learning path"});
+  }
+});
+
 
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

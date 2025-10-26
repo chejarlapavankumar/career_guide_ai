@@ -2,11 +2,15 @@ import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import SkeletonLoader from "../components/SkeletonLoader";
 
+import ReactMarkdown from 'react-markdown';
 
 function DetailsPage(){
     const {professionId} = useParams();
     const [details,setDetails]=useState(null);
     const [isLoading,setIsLoading]=useState(true);
+
+    const [learningPath,setLearningPath]=useState("");
+    const [isPathLoading, setIsPathLoading]=useState(false);
 
     useEffect(() => {
       setIsLoading(true);
@@ -18,6 +22,27 @@ function DetailsPage(){
         });
     }, [professionId]);
 
+    const handleGeneratePath = () => {
+      setIsPathLoading(true);
+      setLearningPath("");
+
+      fetch(`${import.meta.env.VITE_API_URL}/api/generate-learning-path`, {
+        method : 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({professionName: details.name})
+      })
+      .then(res=>res.json())
+      .then(data=>{
+        setLearningPath(data.learningPath);
+        setIsPathLoading(false);
+      })
+      .catch(err=>{
+        console.error("Error generating learning path:",err);
+        setIsPathLoading(false);
+        setLearningPath("Sorry, I couldn't generate a learning path for this profession at this time.");
+      });
+    };
+    
     if(isLoading){
         return <SkeletonLoader/>;
     }
@@ -51,6 +76,24 @@ function DetailsPage(){
             {details.learningPaths.map((lp, i) => <li key={i}>{lp}</li>)}
           </ul>
         </div>
+
+        <div className="mt-8">
+          <h3 className="text-2xl font-bold text-gray-800">Your learning path</h3>
+          <p className="text-gray-600 mt-2">Get a custom, step-by-step guide from our AI career coach.</p>
+          <button 
+            onClick={handleGeneratePath}
+            disabled={isPathLoading}
+            className="mt-8 px-6 py-2 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 disabled:bg-green-400"
+          >
+            {isPathLoading ? "Generating...":"Generate My Path"}
+          </button>
+
+          <div className="mt-6 prose prose-lg max-w-none">
+            {isPathLoading && <p>Generating your custom path, please wait...</p>}
+            <ReactMarkdown>{learningPath}</ReactMarkdown>
+          </div>
+        </div>
+
       </div>
     </div>
     );

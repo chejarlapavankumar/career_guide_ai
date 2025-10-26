@@ -4,12 +4,21 @@ import {useParams, Link} from "react-router-dom";
 function SubProfessionsPage(){
     const {domainId} = useParams();
     const [subProfessions,setSubProfessions]=useState([]);
+    const [isLoading, setIsLoading] =useState(true);
 
     useEffect(() => {
+        setIsLoading(true);
         fetch(`${import.meta.env.VITE_API_URL}/api/professions/parent/${domainId}`)
         .then(res=> res.json())
-        .then(data=> setSubProfessions(data));
+        .then(data=> {setSubProfessions(data);
+            setIsLoading(false);
+    });
     }, [domainId]);
+
+    if(isLoading){
+        return <div className="p-8 text-center">Loading professions...</div>
+    }
+
 
     return(
         <div className="min-h-screen bg-gray-100 p-8">
