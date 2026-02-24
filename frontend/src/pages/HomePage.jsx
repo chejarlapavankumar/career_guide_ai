@@ -43,9 +43,9 @@ function HomePage(){
                     value={query}
                     onChange={(e)=>setQuery(e.target.value)}
                     placeholder="eg., i enjoy solving puzzles and working with data"
-                    className="w-full px-4 py-2 border border-coral-700 placeholder-coral-500 bg-coral-50 text-coral-500 rounded-l-lg focus:outline-none focus:ring-primary-500"
+                    className="w-full px-4 py-2 border border-primary-300 placeholder-primary-500 bg-primary-50 text-primary-800 rounded-l-lg focus:outline-none focus:ring-primary-500"
                 />
-                <button type="submit" className="bg-coral-500 text-white px-6 py-2 rounded-r-lg hover:bg-coral-700">
+                <button type="submit" className="bg-primary-700 text-white px-6 py-3 rounded-r-lg hover:bg-primary-600 transition duration-200">
                     Search
                 </button>
             </form>

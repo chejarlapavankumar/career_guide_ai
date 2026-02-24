@@ -22,7 +22,7 @@ function SubProfessionsPage(){
 
     return(
         <div className="min-h-screen bg-primary-100 p-8">
-            <h1 className="text-3xl font-bold text-center mb-6 text-primary-900">Select a Profession</h1>
+            <h2 className="text-2xl font-bold text-center mb-6 text-primary-900">Select a Profession</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {
                     subProfessions.map(prof => (

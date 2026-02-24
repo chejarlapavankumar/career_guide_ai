@@ -129,7 +129,10 @@ async function main() {
       });
 
       results.sort((a, b) => b.score - a.score);
-      res.json(results.slice(0, 4));
+      const bestScore=results[0]?.score || 0;
+      const dynamicThreshold=bestScore*0.7;
+      const filteredResults=results.filter(r => r.score >= dynamicThreshold);
+      res.json(filteredResults);
     }
     catch(error){
       console.error("Search error:",error);

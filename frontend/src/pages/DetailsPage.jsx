@@ -49,18 +49,18 @@ function DetailsPage(){
     return(
       <div className="p-8 bg-primary-50 min-h-screen">
       <div className="max-w-4xl mx-auto bg-primary-50 p-8 rounded-xl shadow-md">
-        <h2 className="text-3xl font-bold text-primary-900">{details.name}</h2>
-        <p className="mt-2 text-lg text-primary-700">{details.description}</p>
+        <h2 className="text-4xl font-bold text-primary-900">{details.name}</h2>
+        <p className="mt-2 text-base text-primary-700">{details.description}</p>
         
-        <div className="mt-6 bg-primary-800 rounded-xl p-4">
-          <h3 className="text-xl font-semibold text-primary-100 border-b pb-2 mb-3">Key Responsibilities</h3>
-          <ul className="list-disc list-inside space-y-2 text-primary-50">
+        <div className="mt-6 bg-primary-50 rounded-xl p-4 hover:translate-y-1 hover:shadow-lg transition-transform duration-200 border-primary-200 border-2">
+          <h3 className="text-xl font-semibold text-primary-800 border-b pb-2 mb-3">Key Responsibilities</h3>
+          <ul className="list-disc list-inside space-y-2 text-primary-700">
             {details.responsibilities.map((r, i) => <li key={i}>{r}</li>)}
           </ul>
         </div>
         
-        <div className="mt-6 bg-primary-800 rounded-xl p-4">
-          <h3 className="text-xl font-semibold text-primary-100 border-b pb-2 mb-3">Required Skills</h3>
+        <div className="mt-6 bg-primary-50 rounded-xl p-4 hover:translate-y-1 hover:shadow-lg transition-transform duration-200 border-primary-200 border-2">
+          <h3 className="text-xl font-semibold text-primary-800 border-b pb-2 mb-3">Required Skills</h3>
           <div className="flex flex-wrap gap-2 mt-2">
             {details.skills.map(s => (
               <span key={s.id} className="bg-primary-100 text-primary-800 text-sm font-medium px-3 py-1 rounded-full">
@@ -70,9 +70,9 @@ function DetailsPage(){
           </div>
         </div>
 
-        <div className="mt-6 bg-primary-800 rounded-xl p-4">
-          <h3 className="text-xl font-semibold text-primary-100 border-b pb-2 mb-3">Common Learning Paths</h3>
-          <ul className="list-disc list-inside space-y-2 text-primary-50">
+        <div className="mt-6 bg-primary-50 rounded-xl p-4 hover:translate-y-1 hover:shadow-lg transition-transform duration-200 border-primary-200 border-2">
+          <h3 className="text-xl font-semibold text-primary-800 border-b pb-2 mb-3">Common Learning Paths</h3>
+          <ul className="list-disc list-inside space-y-2 text-primary-700">
             {details.learningPaths.map((lp, i) => <li key={i}>{lp}</li>)}
           </ul>
         </div>
@@ -80,13 +80,13 @@ function DetailsPage(){
         <hr className="my-8 border-primary-700 border-2" />
 
 
-        <div className="mt-8 bg-primary-800 rounded-xl p-4 hover:bg-primary-500 transition-colors duration-200">
+        <div className="mt-8 bg-gradient-to-b from-primary-800 to-primary-400 rounded-xl p-4 hover:bg-primary-500 transition-colors duration-200 hover:translate-y-1 hover:shadow-lg">
           <h3 className="text-2xl font-bold text-primary-100">Your learning path</h3>
-          <p className="text-primary-50 mt-2">Get a custom, step-by-step guide from our AI career coach.</p>
+          <p className="text-primary-50 mt-2 text-base">Get a custom, step-by-step guide from our AI career coach.</p>
           <button 
             onClick={handleGeneratePath}
             disabled={isPathLoading}
-            className="mt-8 px-6 py-2 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 disabled:bg-green-400"
+            className="mt-8 px-6 py-2 bg-primary-900 text-white font-semibold rounded-lg shadow hover:bg-primary-700 disabled:bg-primary-400"
           >
             {isPathLoading ? "Generating...":"Generate My Path"}
           </button>
