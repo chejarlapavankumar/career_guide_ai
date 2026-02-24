@@ -30,10 +30,10 @@ function HomePage(){
     const displayList= searchResults.length >0 ? searchResults :domains;
 
     return (
-        <div className="min-h-screen bg-gray-100 p-8">
-            <h1 className="text-3xl font-bold text-center mb-6">Career Guidance AI</h1>
+        <div className="min-h-screen bg-white p-8">
+            <h1 className="text-primary-900 text-3xl font-bold text-center mb-6">Career Guidance AI</h1>
 
-            <p className="text-center text-lg text-gray-600 mb-8">
+            <p className="text-center text-lg text-primary-500 mb-8">
                 Describe your interests and find your perfect career path.
             </p>
 
@@ -43,23 +43,23 @@ function HomePage(){
                     value={query}
                     onChange={(e)=>setQuery(e.target.value)}
                     placeholder="eg., i enjoy solving puzzles and working with data"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-coral-300 placeholder-coral-300 bg-primary-50 text-coral-300 rounded-l-lg focus:outline-none focus:ring-primary-500"
                 />
-                <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded-r-lg hover:bg-blue-700">
+                <button type="submit" className="bg-coral-300 text-white px-6 py-2 rounded-r-lg hover:bg-primary-900">
                     Search
                 </button>
             </form>
 
-            <h2 className="text-2xl font-semibold mb-4 text-center">
+            <h2 className="text-2xl font-semibold mb-4 text-center text-primary-600">
                 {searchResults.length>0 ? "Top Recommendations" : "Or, Choose a Domain"}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
+            <div className="flex flex-wrap justify-center gap-4 max-w-7xl mx-auto">
                 {displayList.map(item => (
                 <Link
                     key={item.id}
                     to={searchResults.length > 0 ? `/profession/${item.id}` : `/domain/${item.id}`}
-                    className="bg-white text-center p-4 rounded-xl shadow-md hover:bg-blue-100 hover:shadow-lg transition transform hover:-translate-y-1"
+                    className="sm:min-w-[45%] md:min-w-[30%] lg:min-w-[22%] bg-primary-700 text-center p-4 rounded-xl shadow-md hover:bg-primary-500 hover:shadow-lg transition transform hover:-translate-y-1 text-white"
                 >
                     {item.name}
                 </Link>

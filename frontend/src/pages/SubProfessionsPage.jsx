@@ -21,15 +21,15 @@ function SubProfessionsPage(){
 
 
     return(
-        <div className="min-h-screen bg-gray-100 p-8">
-            <h1 className="text-3xl font-bold text-center mb-6">Select a Profession</h1>
+        <div className="min-h-screen bg-primary-100 p-8">
+            <h1 className="text-3xl font-bold text-center mb-6 text-primary-900">Select a Profession</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {
                     subProfessions.map(prof => (
                         <Link
                             key={prof.id}
                             to={`/profession/${prof.id}`}
-                            className="bg-white text-center p-4 rounded-xl shadow hover:bg-green-100 transition"
+                            className="bg-primary-700 text-white text-center p-4 rounded-xl shadow hover:bg-primary-500 transition"
                         >
                             {prof.name}
                         </Link>
